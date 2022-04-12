@@ -1,0 +1,7 @@
+
+FROM recommenders:cpu-conda AS base
+
+WORKDIR "/home"
+
+EXPOSE 8888
+CMD ["jupyter", "notebook"]

@@ -5,6 +5,7 @@ ARG ENV="cpu"
 ARG HOME="/root"
 
 FROM ubuntu:18.04 AS base
+# FROM recommenders:cpu-conda AS base
 
 LABEL maintainer="Microsoft Recommender Project <RecoDevTeam@service.microsoft.com>"
 
@@ -183,7 +184,7 @@ RUN if [ "${VIRTUAL_ENV}" = "venv" ] || [ "${VIRTUAL_ENV}" = "virtualenv" ]; the
     python -m ipykernel install --user --name venv --display-name "Python (venv)"; fi
 
 ARG HOME
-WORKDIR ${HOME}
+WORKDIR "/home"
 
 EXPOSE 8888
-CMD ["jupyter", "notebook"]
+# CMD ["jupyter", "notebook"]
