@@ -1,16 +1,18 @@
 Docker Support
 ==============
+
 The Dockerfile in this directory will build Docker images with all the dependencies and code needed to run example notebooks or unit tests included in this repository.
 
 Multiple environments are supported by using [multistage builds](https://docs.docker.com/develop/develop-images/multistage-build/). In order to efficiently build the Docker images in this way, [Docker BuildKit](https://docs.docker.com/develop/develop-images/build_enhancements/) is necessary.
-The following examples show how to build and run the Docker image for CPU, PySpark, and GPU environments. 
+The following examples show how to build and run the Docker image for CPU, PySpark, and GPU environments.
 
-<i>Note:</i> On some platforms, one needs to manually specify the environment variable for `DOCKER_BUILDKIT`to make sure the build runs well. For example, on a Windows machine, this can be done by the powershell command as below, before building the image
+`<i>`Note:`</i>` On some platforms, one needs to manually specify the environment variable for `DOCKER_BUILDKIT`to make sure the build runs well. For example, on a Windows machine, this can be done by the powershell command as below, before building the image
+
 ```
 $env:DOCKER_BUILDKIT=1
 ```
 
-<i>Warning:</i> On some platforms using Docker Buildkit interferes with Anaconda environment installation. If you find that the docker build is hanging during Anaconda environment setup stage try building the container without Buildkit enabled.
+`<i>`Warning:`</i>` On some platforms using Docker Buildkit interferes with Anaconda environment installation. If you find that the docker build is hanging during Anaconda environment setup stage try building the container without Buildkit enabled.
 
 Once the container is running you can access Jupyter notebooks at http://localhost:8888.
 
@@ -18,15 +20,28 @@ Building and Running with Docker
 --------------------------------
 
 See examples below for the case of conda. If you use venv or virtualenv instead, replace `--build-arg VIRTUAL_ENV=conda` with `--build-arg VIRTUAL_ENV=venv` or `--build-arg VIRTUAL_ENV=virtualenv`, respectively.
+
 <details>
 <summary><strong><em>CPU environment</em></strong></summary>
+
 
 ```
 DOCKER_BUILDKIT=1 docker build -t recommenders:cpu --build-arg ENV=cpu --build-arg VIRTUAL_ENV=conda .
 docker run -p 8888:8888 -d recommenders:cpu
 ```
 
-</details>
+If build by a customer dockerfile:
+
+```bash
+DOCKER_BUILDKIT=1 docker build -t recommenders:cpuconda3 -f Dockerfile2 --build-arg ENV=cpu --build-arg VIRTUAL_ENV=conda .
+```
+
+Run the docker without jupyter notebook and in the dev mode.
+
+```bash
+docker run -it -v $(dirname $(dirname "$PWD")):/home -p 8877:8888 recommenders:cpu-conda2
+```
+
 
 <details>
 <summary><strong><em>PySpark environment</em></strong></summary>
@@ -63,11 +78,11 @@ Build Arguments
 
 There are several build arguments which can change how the image is built. Similar to the `ENV` build argument these are specified during the docker build command.
 
-Build Arg|Description|
----------|-----------|
-ENV|Environment to use, options: cpu, pyspark, gpu, full (defaults to cpu)|
-VIRTUAL_ENV|Virtual environment to use; mandatory argument, must be one of "conda", "venv", "virtualenv"|
-ANACONDA|Anaconda installation script (defaults to miniconda3 4.6.14)|
+| Build Arg   | Description                                                                                  |
+| ----------- | -------------------------------------------------------------------------------------------- |
+| ENV         | Environment to use, options: cpu, pyspark, gpu, full (defaults to cpu)                       |
+| VIRTUAL_ENV | Virtual environment to use; mandatory argument, must be one of "conda", "venv", "virtualenv" |
+| ANACONDA    | Anaconda installation script (defaults to miniconda3 4.6.14)                                 |
 
 Example:
 
@@ -75,12 +90,13 @@ Example:
 DOCKER_BUILDKIT=1 docker build -t recommenders:cpu --build-arg ENV=cpu --build-arg VIRTUAL_ENV=conda .
 ```
 
-In order to see detailed progress with BuildKit you can provide a flag during the build command: ```--progress=plain```
+In order to see detailed progress with BuildKit you can provide a flag during the build command: ``--progress=plain``
 
 Running tests with docker
 -------------------------
 
-To run the tests using e.g. the CPU image, do the following: 
+To run the tests using e.g. the CPU image, do the following:
+
 ```
 docker run -it recommenders:cpu bash -c 'pip install pytest; \
 pip install pytest-cov; \

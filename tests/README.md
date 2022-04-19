@@ -3,9 +3,7 @@
 This project uses unit, smoke and integration tests with Python files and notebooks:
 
 * In the unit tests we just make sure the utilities and notebooks run.
-
 * In the smoke tests, we run them with a small dataset or a small number of epochs to make sure that, apart from running, they provide reasonable metrics.
-
 * In the integration tests we use a bigger dataset for more epochs and we test that the metrics are what we expect.
 
 For more information, see a [quick introduction to unit, smoke and integration tests](https://miguelgfierro.com/blog/2018/a-beginners-guide-to-python-testing/). To manually execute the unit tests in the different environments, first **make sure you are in the correct environment as described in the [SETUP.md](../SETUP.md)**.
@@ -144,7 +142,7 @@ In order to skip a test because there is an OS or upstream issue which cannot be
 
 Example:
 
-    @pytest.mark.skip(reason="<INSERT VALID REASON>")
+    @pytest.mark.skip(reason="`<INSERT VALID REASON>`")
     @pytest.mark.skipif(sys.platform == 'win32', reason="Not implemented on Windows")
     def test_to_skip():
         assert False
@@ -153,25 +151,26 @@ Example:
 
 ### Test execution with tox
 
-[Tox](https://tox.readthedocs.io/en/latest/) is a great tool for both virtual environment management and test execution. Tox acts like a front-end for our CI workflows. Our existing [CI pipelines](https://github.com/microsoft/recommenders/actions) in GitHub is leveraging it to orchestrate the build. This way we can provide a **parity** in both local and remote execution environments if both run tox. Run tox and no more **"tests run fine in my dev box but fail in the remote build"**! 
+[Tox](https://tox.readthedocs.io/en/latest/) is a great tool for both virtual environment management and test execution. Tox acts like a front-end for our CI workflows. Our existing [CI pipelines](https://github.com/microsoft/recommenders/actions) in GitHub is leveraging it to orchestrate the build. This way we can provide a **parity** in both local and remote execution environments if both run tox. Run tox and no more **"tests run fine in my dev box but fail in the remote build"**!
 
 1. If you haven't, `pip install tox`
 2. To run static analysis: `tox -e flake8`
 3. To run any of our test suites:
-    `tox -e {TOX_ENV} -- {PYTEST_PARAM}`
+   `tox -e {TOX_ENV} -- {PYTEST_PARAM}`
 
-    where 
-    - `TOX_ENV` can be `cpu|gpu|spark|all`, each env maps to the "extra" dependency, for example recommenders[gpu], and recommenders[spark]. It can also be any of the [default envs](https://tox.readthedocs.io/en/latest/config.html#tox-environments): `py|pyNM`
-    - `PYTEST_PARAM` are any standard parameters to supply to `pytest` cli.
+   where
 
-    For example:
-    
-    1. `tox -e cpu -- tests/unit -m "not notebook and not spark and not gpu` (runs the unit tests with `recommenders[dev,example]` dependencies)
-    2. `tox -e gpu -- tests/unit -m "gpu and notebook"` (runs the gpu notebook tests with `recommenders[dev,example,gpu]` dependencies)
-    3. `tox -e spark -- tests/unit -m "spark and notebook"` (runs the spark notebook tests with `recommenders[dev,example,spark]` dependencies)
-    4. `tox -e all -- tests/unit` (to run all of the unit tests with `recommenders[all]` dependencies)
-    5. `tox -e py -- tests/unit` (runs the unit tests under the default python interpreter with `recommenders[all]`)
-    6. `tox -e py37 -- tests/unit` (runs the unit tests under Python3.7 with `recommenders[all]` )
+   - `TOX_ENV` can be `cpu|gpu|spark|all`, each env maps to the "extra" dependency, for example recommenders[gpu], and recommenders[spark]. It can also be any of the [default envs](https://tox.readthedocs.io/en/latest/config.html#tox-environments): `py|pyNM`
+   - `PYTEST_PARAM` are any standard parameters to supply to `pytest` cli.
+
+   For example:
+
+   1. `tox -e cpu -- tests/unit -m "not notebook and not spark and not gpu` (runs the unit tests with `recommenders[dev,example]` dependencies)
+   2. `tox -e gpu -- tests/unit -m "gpu and notebook"` (runs the gpu notebook tests with `recommenders[dev,example,gpu]` dependencies)
+   3. `tox -e spark -- tests/unit -m "spark and notebook"` (runs the spark notebook tests with `recommenders[dev,example,spark]` dependencies)
+   4. `tox -e all -- tests/unit` (to run all of the unit tests with `recommenders[all]` dependencies)
+   5. `tox -e py -- tests/unit` (runs the unit tests under the default python interpreter with `recommenders[all]`)
+   6. `tox -e py37 -- tests/unit` (runs the unit tests under Python3.7 with `recommenders[all]` )
 
 ## How to create tests on notebooks with Papermill
 
@@ -193,7 +192,7 @@ def test_sar_single_node_runs(notebooks, output_notebook, kernel_name):
 
 Notice that the input of the function is a fixture defined in [conftest.py](conftest.py). For more information, please see the [definition of fixtures in PyTest](https://docs.pytest.org/en/latest/fixture.html).
 
-For executing this test, first make sure you are in the correct environment as described in the [SETUP.md](../SETUP.md): 
+For executing this test, first make sure you are in the correct environment as described in the [SETUP.md](../SETUP.md):
 
 **Note that the next instruction executes the tests from the root folder.**
 
@@ -233,9 +232,9 @@ def test_sar_single_node_smoke(notebooks, output_notebook, kernel_name):
     assert results["recall"] == pytest.approx(0.175956743, TOL)
 ```
 
-As it can be seen in the code, we are injecting the dataset size and the top k and we are recovering the precision and recall at k. 
+As it can be seen in the code, we are injecting the dataset size and the top k and we are recovering the precision and recall at k.
 
-For executing this test, first make sure you are in the correct environment as described in the [SETUP.md](../SETUP.md): 
+For executing this test, first make sure you are in the correct environment as described in the [SETUP.md](../SETUP.md):
 
 **Note that the next instructions execute the tests from the root folder.**
 

@@ -1,7 +1,9 @@
 
 FROM recommenders:cpu-conda AS base
 
-WORKDIR "/home"
+RUN conda install pyspark=2.4.5; \
+conda install 
 
-EXPOSE 8888
+WORKDIR "/home"
+# EXPOSE 8888
 CMD ["jupyter", "notebook"]
